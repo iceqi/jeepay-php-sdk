@@ -1,7 +1,9 @@
 # jeepay-php-sdk
 
 #### 介绍
-jeepay-php-sdk
+A jeepay SDK for php.
+
+fork 自 reprover/jeepay-php-sdk 适配7.0
 
 #### 软件架构
 软件架构说明
@@ -9,9 +11,7 @@ jeepay-php-sdk
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  composer require muzi_ys/jeepay-php-sdk
 
 #### 使用说明
 

@@ -1,0 +1,22 @@
+{
+    "name": "muzi_ys/jeepay-php-sdk",
+    "description": "A jeepay SDK for php 7.x",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Reprover\\Jeepay\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "jeff leo",
+            "email": "1099438829@qq.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "guzzlehttp/guzzle": "^6.5",
+        "nesbot/carbon": "^2.66"
+    }
+}
