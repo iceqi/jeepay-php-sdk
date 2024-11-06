@@ -1,6 +1,6 @@
 {
-    "name": "muzi_ys/jeepay-php-sdk",
-    "description": "A jeepay SDK for php 7.x",
+    "name": "1099438829/jeepay-php-sdk",
+    "description": "A jeepay SDK for php 7.0+",
     "type": "library",
     "license": "MIT",
     "autoload": {
