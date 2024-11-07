@@ -4,28 +4,31 @@ namespace Muzi\Jeepay\Request;
 
 use Muzi\Jeepay\Enums\EntryType;
 use Muzi\Jeepay\Enums\IfCode;
-use Muzi\Jeepay\Support\HttpClient;
+use Muzi\Jeepay\Support\JeepayClient;
+use Muzi\Jeepay\Exceptions\HttpException;
+use Muzi\Jeepay\Exceptions\JeepayException;
+use GuzzleHttp\Exception\GuzzleException;
 
-final class Transfer extends HttpClient
+final class Transfer extends JeepayClient
 {
     const TRANSFER_PREFIX = self::COMMON_PREFIX . "/transfer";
-
-    const TRANSFER_ORDER_URL = self::TRANSFER_PREFIX . 'Order';
-
+    const TRANSFER_ORDER_URL = self::TRANSFER_PREFIX . '/order';
     const QUERY_URL = self::TRANSFER_PREFIX . '/query';
 
     /**
-     * @param \Muzi\Jeepay\Enums\IfCode $if_code
-     * @param \Muzi\Jeepay\Enums\EntryType $entry_type
-     * @param int $amount
-     * @param string $account_no
-     * @param string|null $account_name
-     * @param string|null $bank_name
-     * @param string|null $client_ip
-     * @param string|null $transfer_desc
-     * @param string|null $notify_url
-     * @param string|null $channel_extra
-     * @param string|null $ext_param
+     * 执行转账操作
+     *
+     * @param IfCode $if_code 接口代码
+     * @param EntryType $entry_type 进入类型
+     * @param int $amount 转账金额
+     * @param string $account_no 收款账户号码
+     * @param string|null $account_name 收款账户名称（可空）
+     * @param string|null $bank_name 银行名称（可空）
+     * @param string|null $client_ip 客户端IP（可空）
+     * @param string|null $transfer_desc 转账描述（可空）
+     * @param string|null $notify_url 通知URL（可空）
+     * @param string|null $channel_extra 渠道扩展信息（可空）
+     * @param string|null $ext_param 扩展参数（可空）
      *
      * @return array{
      *     accountNo: string,
@@ -35,22 +38,23 @@ final class Transfer extends HttpClient
      *     state: int,
      *     transferId: string
      *  }
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Muzi\Jeepay\Exceptions\HttpException
-     * @throws \Muzi\Jeepay\Exceptions\JeepayException
+     * @throws GuzzleException
+     * @throws HttpException
+     * @throws JeepayException
      */
-    public function transferOrder(IfCode    $if_code,
-                                  EntryType $entry_type,
-                                  int       $amount,
-                                  string    $account_no,
-                                  ?string   $account_name = null,
-                                  ?string   $bank_name = null,
-                                  ?string   $client_ip = null,
-                                  ?string   $transfer_desc = null,
-                                  ?string   $notify_url = null,
-                                  ?string   $channel_extra = null,
-                                  ?string   $ext_param = null): array
-    {
+    public function transferOrder(
+        string $if_code,
+        string $entry_type,
+        int $amount,
+        string $account_no,
+        ?string $account_name = null,
+        ?string $bank_name = null,
+        ?string $client_ip = null,
+        ?string $transfer_desc = null,
+        ?string $notify_url = null,
+        ?string $channel_extra = null,
+        ?string $ext_param = null
+    ): array {
         $params = array_filter([
             'ifCode' => $if_code->value,
             'entryType' => $entry_type->value,
@@ -72,9 +76,10 @@ final class Transfer extends HttpClient
     }
 
     /**
-     * @param string|null $transfer_id
-     * @param string|null $mch_order_no
+     * 查询转账订单
      *
+     * @param string|null $transfer_id 转账ID
+     * @param string|null $mch_order_no 商户订单号
      * @return array{
      *     accountName: string,
      *     accountNo: string,
@@ -97,19 +102,22 @@ final class Transfer extends HttpClient
      *     createdAt: int,
      *     successTime: int
      * }
-     * @throws \Muzi\Jeepay\Exceptions\HttpException
-     * @throws \Muzi\Jeepay\Exceptions\JeepayException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws HttpException
+     * @throws JeepayException
+     * @throws GuzzleException
      */
     public function query(?string $transfer_id, ?string $mch_order_no): array
     {
         if (is_null($transfer_id) && is_null($mch_order_no)) {
-            throw new \InvalidArgumentException('one of transferId and mchOrderNo is required');
+            throw new \InvalidArgumentException('One of transferId and mchOrderNo is required');
         }
-        $params = [
+
+        $params = array_filter([
             'transferId' => $transfer_id,
             'mchOrderNo' => $mch_order_no,
-        ];
+        ], function ($value) {
+            return !is_null($value);
+        });
 
         return $this->postForm(self::QUERY_URL, $params)->toArray();
     }

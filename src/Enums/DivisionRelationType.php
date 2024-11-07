@@ -29,25 +29,4 @@ class DivisionRelationType
     const USER = 'USER';
     const SUPPLIER = 'SUPPLIER';
     const CUSTOM = 'CUSTOM';
-
-    public $value;
-
-    private function __construct($value)
-    {
-        $this->value = $value;
-    }
-
-    public static function from($value)
-    {
-        $constants = (new \ReflectionClass(__CLASS__))->getConstants();
-        if (!in_array($value, $constants, true)) {
-            throw new \InvalidArgumentException("Invalid value for DivisionRelationType: $value");
-        }
-        return new self($value);
-    }
-
-    public function getValue()
-    {
-        return $this->value;
-    }
 }

@@ -2,26 +2,29 @@
 
 namespace Muzi\Jeepay\Request;
 
-use Muzi\Jeepay\Support\HttpClient;
+use Muzi\Jeepay\Support\JeepayClient;
+use Muzi\Jeepay\Exceptions\HttpException;
+use Muzi\Jeepay\Exceptions\JeepayException;
+use GuzzleHttp\Exception\GuzzleException;
 
-final class Refund extends HttpClient
+final class Refund extends JeepayClient
 {
-
     const REFUND_PREFIX = self::COMMON_PREFIX . "/refund";
     const REFUND_ORDER_URL = self::REFUND_PREFIX . '/refundOrder';
-
     const QUERY_URL = self::REFUND_PREFIX . '/query';
 
     /**
-     * @param string|null $pay_order_id
-     * @param string|null $mch_order_no
-     * @param string $mch_refund_no
-     * @param int $refund_amount
-     * @param string $refund_reason
-     * @param array $channel_extra
-     * @param string|null $notify_url
-     * @param string|null $client_ip
-     * @param string|null $ext_param
+     * 处理退款订单
+     *
+     * @param string|null $pay_order_id 支付订单ID
+     * @param string|null $mch_order_no 商户订单号
+     * @param string $mch_refund_no 商户退款单号
+     * @param int $refund_amount 退款金额
+     * @param string $refund_reason 退款原因
+     * @param array $channel_extra 渠道附加参数
+     * @param string|null $notify_url 通知URL
+     * @param string|null $client_ip 客户端IP
+     * @param string|null $ext_param 扩展参数
      *
      * @return array{
      *      channelOrderNo: string,
@@ -31,22 +34,23 @@ final class Refund extends HttpClient
      *      refundOrderId: string,
      *      state: int,
      *  }
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Muzi\Jeepay\Exceptions\HttpException
-     * @throws \Muzi\Jeepay\Exceptions\JeepayException
+     * @throws GuzzleException
+     * @throws HttpException
+     * @throws JeepayException
      */
-    public function refundOrder(?string $pay_order_id,
-                                ?string $mch_order_no,
-                                string  $mch_refund_no,
-                                int     $refund_amount,
-                                string  $refund_reason,
-                                array   $channel_extra = [],
-                                ?string $notify_url = null,
-                                ?string $client_ip = null,
-                                ?string $ext_param = null): array
-    {
+    public function refundOrder(
+        ?string $pay_order_id,
+        ?string $mch_order_no,
+        string $mch_refund_no,
+        int $refund_amount,
+        string $refund_reason,
+        array $channel_extra = [],
+        ?string $notify_url = null,
+        ?string $client_ip = null,
+        ?string $ext_param = null
+    ): array {
         if (is_null($pay_order_id) && is_null($mch_order_no)) {
-            throw new \InvalidArgumentException('one of payOrderId and mchOrderNo is required');
+            throw new \InvalidArgumentException('One of payOrderId and mchOrderNo is required');
         }
 
         $params = array_filter([
@@ -56,7 +60,7 @@ final class Refund extends HttpClient
             'refundAmount' => $refund_amount,
             'currency' => 'cny',
             'refundReason' => $refund_reason,
-            'channelExtra' => $channel_extra,
+            'channelExtra' => json_encode($channel_extra),
             'notifyUrl' => $notify_url,
             'clientIp' => $client_ip,
             'extParam' => $ext_param,
@@ -68,10 +72,12 @@ final class Refund extends HttpClient
     }
 
     /**
-     * @param string|null $refund_order_id
-     * @param string|null $mch_refund_no
+     * 查询退款订单
      *
-     * @return array{
+     * @param string|null $refund_order_id 退款订单ID
+     * @param string|null $mch_refund_no 商户退款单号
+     *
+         * @return array{
      *     appId: string,
      *     channelOrderNo: string,
      *     createdAt: int,
@@ -88,19 +94,22 @@ final class Refund extends HttpClient
      *     errCode: string,
      *     errMsg: string,
      * }
-     * @throws \Muzi\Jeepay\Exceptions\HttpException
-     * @throws \Muzi\Jeepay\Exceptions\JeepayException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws HttpException
+     * @throws JeepayException
+     * @throws GuzzleException
      */
     public function query(?string $refund_order_id, ?string $mch_refund_no): array
     {
         if (is_null($refund_order_id) && is_null($mch_refund_no)) {
-            throw new \InvalidArgumentException('one of refundOrderId and mchRefundNo is required');
+            throw new \InvalidArgumentException('One of refundOrderId and mchRefundNo is required');
         }
-        $params = [
+
+        $params = array_filter([
             'refundOrderId' => $refund_order_id,
             'mchRefundNo' => $mch_refund_no,
-        ];
+        ], function ($value) {
+            return !is_null($value);
+        });
 
         return $this->postForm(self::QUERY_URL, $params)->toArray();
     }

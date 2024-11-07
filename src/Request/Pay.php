@@ -3,51 +3,55 @@
 namespace Muzi\Jeepay\Request;
 
 use Muzi\Jeepay\Enums\DivisionMode;
-use Muzi\Jeepay\Enums\WayCode;
-use Muzi\Jeepay\Support\HttpClient;
+use Muzi\Jeepay\Support\JeepayClient;
+use Muzi\Jeepay\Exceptions\HttpException;
+use Muzi\Jeepay\Exceptions\JeepayException;
+use GuzzleHttp\Exception\GuzzleException;
 
-final class Pay extends HttpClient
+final class Pay extends JeepayClient
 {
-
     const PAY_URL = self::COMMON_PREFIX . "/pay";
-
     const UNIFIED_ORDER_URL = self::PAY_URL . '/unifiedOrder';
-
     const QUERY_URL = self::PAY_URL . '/query';
-
     const CLOSE_URL = self::PAY_URL . '/close';
 
     /**
-     * @return array{
-     *     errCode: string,
-     *     errMsg: string,
-     *     mchOrderNo: string,
-     *     orderState: int,
-     *     payOrderId: string,
-     *     payDataType: string,
-     *     payData: string,
-     * }
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Muzi\Jeepay\Exceptions\HttpException
-     * @throws \Muzi\Jeepay\Exceptions\JeepayException
+     * 统一下单
+     *
+     * @param string $mch_order_no
+     * @param string $way_code
+     * @param int $amount
+     * @param string $subject
+     * @param string $body
+     * @param array $channel_extra
+     * @param string|null $notify_url
+     * @param string|null $return_url
+     * @param int|null $expired_time
+     * @param string|null $client_ip
+     * @param string|null $ext_param
+     * @param int $division_mode
+     * @return array
+     * @throws HttpException
+     * @throws JeepayException
+     * @throws GuzzleException
      */
-    public function unifiedOrder(string       $mch_order_no,
-                                 WayCode $way_code,
-                                 int     $amount,
-                                 string  $subject,
-                                 string  $body,
-                                 array   $channel_extra = [],
-                                 ?string $notify_url = null,
-                                 ?string $return_url = null,
-                                 ?int    $expired_time = null,
-                                 ?string $client_ip = null,
-                                 ?string $ext_param = null,
-                                 int     $division_mode = DivisionMode::AUTO): array
-    {
-        // convert all params into camel case, ignore null value
+    public function unifiedOrder(
+        string $mch_order_no,
+        string $way_code,
+        int $amount,
+        string $subject,
+        string $body,
+        array $channel_extra = [],
+        ?string $notify_url = null,
+        ?string $return_url = null,
+        ?int $expired_time = null,
+        ?string $client_ip = null,
+        ?string $ext_param = null,
+        int $division_mode = DivisionMode::AUTO
+    ): array {
         $params = array_filter([
             'mchOrderNo' => $mch_order_no,
-            'wayCode' => $way_code->value,
+            'wayCode' => $way_code,
             'amount' => $amount,
             'currency' => 'cny',
             'subject' => $subject,
@@ -57,20 +61,21 @@ final class Pay extends HttpClient
             'expiredTime' => $expired_time,
             'channelExtra' => json_encode($channel_extra),
             'clientIp' => $client_ip,
-            'divisionMode' => $division_mode->value,
+            'divisionMode' => $division_mode,
             'extParam' => $ext_param,
         ], function ($value) {
             return !is_null($value);
         });
-
+       
         return $this->postForm(self::UNIFIED_ORDER_URL, $params)->toArray();
     }
 
     /**
-     * @param ?string $pay_order_id
-     * @param ?string $mch_order_no
+     * 查询订单
      *
-     * @return array{
+     * @param string|null $pay_order_id
+     * @param string|null $mch_order_no
+          * @return array{
      *     amount: int,
      *     appId: string,
      *     body: string,
@@ -90,15 +95,16 @@ final class Pay extends HttpClient
      *     errCode: string,
      *     errMsg: string,
      * }
-     * @throws \Muzi\Jeepay\Exceptions\HttpException
-     * @throws \Muzi\Jeepay\Exceptions\JeepayException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws HttpException
+     * @throws JeepayException
+     * @throws GuzzleException
      */
-    public function query(?string $pay_order_id, ?string $mch_order_no): array
+    public function query(?string $pay_order_id = null, ?string $mch_order_no = null): array
     {
-        if (is_null($pay_order_id) && is_null($mch_order_no)) {
-            throw new \InvalidArgumentException('one of payOrderId and mchOrderNo is required');
+        if ($pay_order_id === null && $mch_order_no === null) {
+            throw new \InvalidArgumentException('One of payOrderId and mchOrderNo is required');
         }
+
         $params = array_filter([
             'payOrderId' => $pay_order_id,
             'mchOrderNo' => $mch_order_no,
@@ -110,23 +116,21 @@ final class Pay extends HttpClient
     }
 
     /**
+     * 关闭订单
+     *
      * @param string|null $pay_order_id
      * @param string|null $mch_order_no
-     *
-     * @return array{
-     *     errCode: string,
-     *     errMsg: string
-     *     }
-     * @throws \Muzi\Jeepay\Exceptions\HttpException
-     * @throws \Muzi\Jeepay\Exceptions\JeepayException
-     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @return array
+     * @throws HttpException
+     * @throws JeepayException
+     * @throws GuzzleException
      */
-    public function close(?string $pay_order_id, ?string $mch_order_no): array
+    public function close(?string $pay_order_id = null, ?string $mch_order_no = null): array
     {
-        // one of payOrderId and mchOrderNo is required
-        if (is_null($pay_order_id) && is_null($mch_order_no)) {
-            throw new \InvalidArgumentException('one of payOrderId and mchOrderNo is required');
+        if ($pay_order_id === null && $mch_order_no === null) {
+            throw new \InvalidArgumentException('One of payOrderId and mchOrderNo is required');
         }
+
         $params = array_filter([
             'payOrderId' => $pay_order_id,
             'mchOrderNo' => $mch_order_no,
@@ -136,5 +140,4 @@ final class Pay extends HttpClient
 
         return $this->postForm(self::CLOSE_URL, $params)->toArray();
     }
-
 }
