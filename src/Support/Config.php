@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Reprover\Jeepay\Support;
+namespace Muzi\Jeepay\Support;
 
 class Config
 {

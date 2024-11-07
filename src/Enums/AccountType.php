@@ -1,6 +1,6 @@
 <?php
 
-namespace Reprover\Jeepay\Enums;
+namespace Muzi\Jeepay\Enums;
 
 class AccountType
 {

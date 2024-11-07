@@ -1,9 +1,9 @@
 <?php
 
-namespace Reprover\Jeepay\Common;
+namespace Muzi\Jeepay\Common;
 
-use Reprover\Jeepay\Exceptions\JeepayException;
-use Reprover\Jeepay\Support\Signature;
+use Muzi\Jeepay\Exceptions\JeepayException;
+use Muzi\Jeepay\Support\Signature;
 
 class JeepayResponse implements \ArrayAccess
 {
@@ -49,7 +49,7 @@ class JeepayResponse implements \ArrayAccess
     }
 
     /**
-     * @throws \Reprover\Jeepay\Exceptions\JeepayException
+     * @throws \Muzi\Jeepay\Exceptions\JeepayException
      */
     private function checkSign(): void
     {

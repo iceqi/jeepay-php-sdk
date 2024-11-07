@@ -1,10 +1,10 @@
 <?php
 
-namespace Reprover\Jeepay\Request;
+namespace Muzi\Jeepay\Request;
 
-use Reprover\Jeepay\Enums\EntryType;
-use Reprover\Jeepay\Enums\IfCode;
-use Reprover\Jeepay\Support\HttpClient;
+use Muzi\Jeepay\Enums\EntryType;
+use Muzi\Jeepay\Enums\IfCode;
+use Muzi\Jeepay\Support\HttpClient;
 
 final class Transfer extends HttpClient
 {
@@ -15,8 +15,8 @@ final class Transfer extends HttpClient
     const QUERY_URL = self::TRANSFER_PREFIX . '/query';
 
     /**
-     * @param \Reprover\Jeepay\Enums\IfCode $if_code
-     * @param \Reprover\Jeepay\Enums\EntryType $entry_type
+     * @param \Muzi\Jeepay\Enums\IfCode $if_code
+     * @param \Muzi\Jeepay\Enums\EntryType $entry_type
      * @param int $amount
      * @param string $account_no
      * @param string|null $account_name
@@ -36,8 +36,8 @@ final class Transfer extends HttpClient
      *     transferId: string
      *  }
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Reprover\Jeepay\Exceptions\HttpException
-     * @throws \Reprover\Jeepay\Exceptions\JeepayException
+     * @throws \Muzi\Jeepay\Exceptions\HttpException
+     * @throws \Muzi\Jeepay\Exceptions\JeepayException
      */
     public function transferOrder(IfCode    $if_code,
                                   EntryType $entry_type,
@@ -97,8 +97,8 @@ final class Transfer extends HttpClient
      *     createdAt: int,
      *     successTime: int
      * }
-     * @throws \Reprover\Jeepay\Exceptions\HttpException
-     * @throws \Reprover\Jeepay\Exceptions\JeepayException
+     * @throws \Muzi\Jeepay\Exceptions\HttpException
+     * @throws \Muzi\Jeepay\Exceptions\JeepayException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function query(?string $transfer_id, ?string $mch_order_no): array

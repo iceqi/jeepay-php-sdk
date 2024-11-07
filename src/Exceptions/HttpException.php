@@ -1,6 +1,6 @@
 <?php
 
-namespace Reprover\Jeepay\Exceptions;
+namespace Muzi\Jeepay\Exceptions;
 
 class HttpException extends \Exception
 {

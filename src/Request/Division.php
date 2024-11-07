@@ -1,14 +1,14 @@
 <?php
 
-namespace Reprover\Jeepay\Request;
+namespace Muzi\Jeepay\Request;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Reprover\Jeepay\Enums\AccountType;
-use Reprover\Jeepay\Enums\DivisionRelationType;
-use Reprover\Jeepay\Enums\IfCode;
-use Reprover\Jeepay\Exceptions\HttpException;
-use Reprover\Jeepay\Exceptions\JeepayException;
-use Reprover\Jeepay\Support\HttpClient;
+use Muzi\Jeepay\Enums\AccountType;
+use Muzi\Jeepay\Enums\DivisionRelationType;
+use Muzi\Jeepay\Enums\IfCode;
+use Muzi\Jeepay\Exceptions\HttpException;
+use Muzi\Jeepay\Exceptions\JeepayException;
+use Muzi\Jeepay\Support\HttpClient;
 
 final class Division extends HttpClient
 {
@@ -17,13 +17,13 @@ final class Division extends HttpClient
     const DIVISION_EXEC = self::DIVISION_PREFIX . '/exec';
 
     /**
-     * @param \Reprover\Jeepay\Enums\IfCode $if_code
+     * @param \Muzi\Jeepay\Enums\IfCode $if_code
      * @param string $receiver_alias
      * @param int $receiver_group_id
-     * @param \Reprover\Jeepay\Enums\AccountType $acc_type
+     * @param \Muzi\Jeepay\Enums\AccountType $acc_type
      * @param string $acc_no
      * @param string|null $acc_name
-     * @param \Reprover\Jeepay\Enums\DivisionRelationType $relation_type
+     * @param \Muzi\Jeepay\Enums\DivisionRelationType $relation_type
      * @param string|null $relation_type_name
      * @param string|null $channel_ext_info
      * @param string $division_profit
@@ -45,8 +45,8 @@ final class Division extends HttpClient
      *     relationTypeName: string
      *     }
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Reprover\Jeepay\Exceptions\HttpException
-     * @throws \Reprover\Jeepay\Exceptions\JeepayException
+     * @throws \Muzi\Jeepay\Exceptions\HttpException
+     * @throws \Muzi\Jeepay\Exceptions\JeepayException
      */
     public function bind(IfCode $if_code, string $receiver_alias, int $receiver_group_id, AccountType $acc_type, string $acc_no, ?string $acc_name, DivisionRelationType $relation_type, ?string $relation_type_name, ?string $channel_ext_info, string $division_profit): array
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Reprover\Jeepay\Support;
+namespace Muzi\Jeepay\Support;
 
 trait Signature
 {

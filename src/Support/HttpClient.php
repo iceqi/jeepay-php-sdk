@@ -1,13 +1,13 @@
 <?php
 
-namespace Reprover\Jeepay\Support;
+namespace Muzi\Jeepay\Support;
 
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Reprover\Jeepay\Common\JeepayResponse;
-use Reprover\Jeepay\Exceptions\HttpException;
-use Reprover\Jeepay\Exceptions\JeepayException;
+use Muzi\Jeepay\Common\JeepayResponse;
+use Muzi\Jeepay\Exceptions\HttpException;
+use Muzi\Jeepay\Exceptions\JeepayException;
 
 class HttpClient
 {

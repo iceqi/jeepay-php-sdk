@@ -1,8 +1,8 @@
 <?php
 
-namespace Reprover\Jeepay\Request;
+namespace Muzi\Jeepay\Request;
 
-use Reprover\Jeepay\Support\HttpClient;
+use Muzi\Jeepay\Support\HttpClient;
 
 final class Refund extends HttpClient
 {
@@ -32,8 +32,8 @@ final class Refund extends HttpClient
      *      state: int,
      *  }
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Reprover\Jeepay\Exceptions\HttpException
-     * @throws \Reprover\Jeepay\Exceptions\JeepayException
+     * @throws \Muzi\Jeepay\Exceptions\HttpException
+     * @throws \Muzi\Jeepay\Exceptions\JeepayException
      */
     public function refundOrder(?string $pay_order_id,
                                 ?string $mch_order_no,
@@ -88,8 +88,8 @@ final class Refund extends HttpClient
      *     errCode: string,
      *     errMsg: string,
      * }
-     * @throws \Reprover\Jeepay\Exceptions\HttpException
-     * @throws \Reprover\Jeepay\Exceptions\JeepayException
+     * @throws \Muzi\Jeepay\Exceptions\HttpException
+     * @throws \Muzi\Jeepay\Exceptions\JeepayException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function query(?string $refund_order_id, ?string $mch_refund_no): array
