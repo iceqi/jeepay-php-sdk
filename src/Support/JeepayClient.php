@@ -79,11 +79,13 @@ class JeepayClient
     {
         $client = new Client(['base_uri' => $this->baseURL]);
         $data = array_merge($data, ['sign' => $this->sign($data, $this->key)]);
-
-        $options = [
-            'headers' => $this->headers,
-            ($method === 'POST' ? 'form_params' : 'query') => $data
-        ];
+        if ($method === 'GET') {
+            $url = $this->buildURL($url, $data);
+        }
+        $response = $client->request($method, $url, [
+            'headers'     => $this->headers,
+            'form_params' => $method == 'POST' ? $data : [],
+        ]);
         $response = $client->request($method, $url, $options);
         if ($response->getStatusCode() !== 200) {
             throw new HttpException("Request failed with status code " . $response->getStatusCode());
