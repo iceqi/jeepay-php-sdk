@@ -12,17 +12,18 @@ trait Signature
         return $sign === $this->sign($data, $key);
     }
 
-    public function sign($data, $key): string
-    {
-        return $this->signWithMd5($data, $key);
-    }
-
-    private function signWithMd5($data, $key): string
+    public function sign(array $data, string $key)
     {
         ksort($data);
-        $string = $this->toUrlParams($data);
-        $string = $string . "&key=" . $key;
-        return strtoupper(md5($string));
+        reset($data);
+        $md5str = "";
+        foreach ($data as $k => $val) {
+            if (strlen($k) && strlen($val)) {
+                $md5str .= $k . "=" . $val . "&";
+            }
+        }
+        $sign = strtoupper(md5($md5str . "key=" . $key));
+        return $sign;
     }
 
     private function toUrlParams($data): string

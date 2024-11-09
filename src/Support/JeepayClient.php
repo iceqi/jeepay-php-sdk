@@ -86,7 +86,6 @@ class JeepayClient
             'headers'     => $this->headers,
             'form_params' => $method == 'POST' ? $data : [],
         ]);
-        $response = $client->request($method, $url, $options);
         if ($response->getStatusCode() !== 200) {
             throw new HttpException("Request failed with status code " . $response->getStatusCode());
         }
