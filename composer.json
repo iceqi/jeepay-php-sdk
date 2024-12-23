@@ -1,5 +1,5 @@
 {
-    "name": "1099438829/jeepay-php-sdk",
+    "name": "iceqi/jeepay-php-sdk",
     "description": "A jeepay SDK for php 7.0+",
     "type": "library",
     "license": "MIT",
